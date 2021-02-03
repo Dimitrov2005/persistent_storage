@@ -1,14 +1,11 @@
-package com;
-import org.apache.logging.log4j.Level;
+package main.java.com;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static PersistentStorageNoStd persistentStorage;
-    private static final Logger logger = LogManager.getLogger(Main.class);
-
     public static void main(String[] args) {
+        final Logger logger = LogManager.getLogger(Main.class);
        /* Test Persistent Storage with std libs
         persistentStorage = new PersistentStorage();
         persistentStorage.put("anotherString", 12368);
@@ -21,12 +18,12 @@ public class Main {
 
         /*  Test Persistent Storage without std libs
          */
-
+        PersistentStorageNoStd persistentStorage;
         persistentStorage = new PersistentStorageNoStd(40, 100);
 
         persistentStorage.put("anotherString", 12368);
         persistentStorage.put("anotherString12", 16);
-        logger.printf(Level.ERROR,"got value from db = %s \n ", persistentStorage.get("anotherString12"));
+        logger.info(String.format("got value from db = %s \n ", persistentStorage.get("anotherString12")));
         persistentStorage.remove("anotherString");
 
 

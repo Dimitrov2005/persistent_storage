@@ -1,4 +1,4 @@
-package com;
+package main.java.com;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +13,7 @@ public class PersistentStorageNoStd {
     private MapStruct persistentStorageMap;
     private File psFile = new File("persistentStorageBase.txt");
     private int lengthOfEntry;
+    private final Logger logger = LogManager.getLogger(Main.class);
 
     PersistentStorageNoStd(int lengthOfEntry, int storageSize) {
         this.lengthOfEntry = lengthOfEntry;
@@ -20,7 +21,7 @@ public class PersistentStorageNoStd {
         populateStorageMap(persistentStorageMap);
         try {
             if (psFile.createNewFile()) {
-                System.out.println("New database file for persistent storage created: \n" + psFile.getName());
+                logger.info("New database file for persistent storage created: \n" + psFile.getName());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +49,7 @@ public class PersistentStorageNoStd {
                 String data = psFileScan.nextLine();
                 String [] tmp = data.split(" ");
                 if (tmp[0].equals(key)) {
-                    System.out.format("The key is already inside the db : %s \n ", key);
+                    logger.info(String.format("The key is already inside the db : %s \n ", key));
                     oldK = tmp[0];
                     oldV = tmp[1];
                     keyExists = true;
@@ -68,24 +69,24 @@ public class PersistentStorageNoStd {
             psFileScan.close();
 
             //Write the new buffer to the file:
-            FileWriter PSWriter = new FileWriter("persistentStorageBase.txt");
-            PSWriter.flush();
-            PSWriter.write(psRawText);
-            PSWriter.close();
+            FileWriter psWriter = new FileWriter("persistentStorageBase.txt");
+            psWriter.flush();
+            psWriter.write(psRawText);
+            psWriter.close();
 
             //Now handle the local map
             if(persistentStorageMap.contains(toCharArray(key))) {
                 persistentStorageMap.replace(toCharArray(key), toCharArray(value.toString()));
-                System.out.format("Update entry value for key=%s, value=%d \n",key,value);
+                logger.info(String.format("Update entry value for key=%s, value=%d \n",key,value));
             }
             else {
                 persistentStorageMap.put(toCharArray(key), toCharArray(value.toString()));
-                System.out.format("Add new entry to database with key=%s, value=%d \n", key, value);
+                logger.info(String.format("Add new entry to database with key=%s, value=%d \n", key, value));
             }
             //TODO: Make smarter - via cast check for object type and write based on it in DB
 
         } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+            logger.info("An error occurred when trying to create or load PSDB.");
             e.printStackTrace();
         }
     }
@@ -105,7 +106,7 @@ public class PersistentStorageNoStd {
             }
             psFileScan.close();
         } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+            logger.info("An error occurred when trying to create or load PSDB.");
             e.printStackTrace();
         }
         return obj;
@@ -131,7 +132,7 @@ public class PersistentStorageNoStd {
                 String data = psFileScan.nextLine();
                 String[] tmp = data.split(" ");
                 if (tmp[0].equals(key)) {
-                    System.out.format("The key to be removed is inside the db : %s \n ", key);
+                    logger.info(String.format("The key to be removed is inside the db : %s \n ", key));
                     oldK = tmp[0];
                     oldV = tmp[1];
                     keyExists = true;
@@ -166,23 +167,23 @@ public class PersistentStorageNoStd {
     }
 
     void populateStorageMap(MapStruct map){
-        Scanner PSfileScan;
+        Scanner psFileScan;
         try {
             //load the map from the file
-            PSfileScan = new Scanner(psFile);
-            System.out.println("Loading file persistentStorageBase.txt");
-            while (PSfileScan.hasNextLine()) { //Improve: parse based on data red
-                String data = PSfileScan.nextLine();
+            psFileScan = new Scanner(psFile);
+            logger.info("Loading file persistentStorageBase.txt");
+            while (psFileScan.hasNextLine()) { //Improve: parse based on data red
+                String data = psFileScan.nextLine();
                 String[] kv = data.split(" ");
                 if(kv.length >= 2) {
                     String k = kv[0];
                     String v = kv[1];
                     persistentStorageMap.put(toCharArray(k), toCharArray(v));
-                } else System.out.println("Error - String split did not get any values");
+                } else logger.info("Error - String split did not get any values");
             }
-            PSfileScan.close();
+            psFileScan.close();
         } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+            logger.info("An error occurred when trying to create or load PSDB.");
             e.printStackTrace();
         }
     }
