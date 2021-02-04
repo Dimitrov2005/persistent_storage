@@ -1,14 +1,13 @@
-package main.java.com;
+package com;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PersistentStorageNoStd {
+public class PersistentStorageNoStd implements Storage{
 
     private MapStruct persistentStorageMap;
     private File psFile = new File("persistentStorageBase.txt");
@@ -36,7 +35,7 @@ public class PersistentStorageNoStd {
         return array;
     }
 
-    void put(String key, Object value)  {
+    public void put(String key, Object value)  {
         try{
             //Read file for already existing key, if found - update
             Scanner psFileScan = new Scanner(psFile);
@@ -91,7 +90,7 @@ public class PersistentStorageNoStd {
         }
     }
 
-    Object get(String key) {
+    public Object get(String key) {
         Scanner psFileScan;
         Object obj = new Object();
         try {
@@ -112,11 +111,11 @@ public class PersistentStorageNoStd {
         return obj;
     }
 
-    boolean contains(String key) {
+    public boolean contains(String key) {
         return persistentStorageMap.contains(toCharArray(key));
     }
 
-    boolean remove(String key) {
+   public boolean remove(String key) {
         boolean rmStorage = false;
         boolean rmLocal = false;
         boolean keyExists = false;
@@ -166,7 +165,7 @@ public class PersistentStorageNoStd {
         return rmLocal && rmStorage;
     }
 
-    void populateStorageMap(MapStruct map){
+    private void populateStorageMap(MapStruct map){
         Scanner psFileScan;
         try {
             //load the map from the file

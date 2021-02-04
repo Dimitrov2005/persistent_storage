@@ -1,31 +1,53 @@
-package main.java.com;
+package com;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.*;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
         final Logger logger = LogManager.getLogger(Main.class);
-       /* Test Persistent Storage with std libs
-        persistentStorage = new PersistentStorage();
-        persistentStorage.put("anotherString", 12368);
-        persistentStorage.put("anotherString12", 16);
 
-        System.out.format("got value from db = %s \n ", persistentStorage.get("anotherString12"));
+        /* Test Persistent Storage with std libs
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        //Configure JSON to detect all fields (public, private,etc)
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-        persistentStorage.remove("anotherString");
+        Integer intVal = 10;
+        String info = mapper.writeValueAsString(tmp);
+        logger.info(info);
         */
 
-        /*  Test Persistent Storage without std libs
-         */
-        PersistentStorageNoStd persistentStorage;
-        persistentStorage = new PersistentStorageNoStd(40, 100);
+        Temp tmp  = new Temp();
+        PersistentStorage persistentStorage = new PersistentStorage("text.txt");
 
+        persistentStorage.put("anotherString", 12368);
+        persistentStorage.put("anotherString12",tmp );
+        Object obj = persistentStorage.get("anotherString12");
+
+        //System.out.format("got value from db = %s \n ", persistentStorage.get("anotherString12"));
+        //persistentStorage.remove("anotherString");
+
+
+        //logger.info("The class in json:" + gson.toJson(persistentStorage));
+
+        /*  Test Persistent Storage without std libs
+
+        PersistentStorage persistentStorage;
+        persistentStorage = new PersistentStorage("sss.txt");
         persistentStorage.put("anotherString", 12368);
         persistentStorage.put("anotherString12", 16);
         logger.info(String.format("got value from db = %s \n ", persistentStorage.get("anotherString12")));
         persistentStorage.remove("anotherString");
-
+        */
 
 
         /* Test Map Structure
