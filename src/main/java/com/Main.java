@@ -67,7 +67,8 @@ public class Main {
         ms.put(key, value);
         ms.put(key1, value1);
         char[] keyRed = ms.getValue(1);
-       System.out.println(String.format("Got 1'st element of the storage key = %s \n", String.valueOf(keyRed)));
+       System.out.println(String.format("Got 1'st eleme
+      nt of the storage key = %s \n", String.valueOf(keyRed)));
        char [] valByKey = ms.getValueByKey(key);
        System.out.format("Got the value %s \n", String.valueOf(valByKey));
        ms.contains(key1);
