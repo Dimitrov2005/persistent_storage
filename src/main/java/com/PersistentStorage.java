@@ -25,7 +25,7 @@ public class PersistentStorage implements Storage {
      * @param storageFileName - name of the file on which the
      *                        will be used as local storage
      */
-    PersistentStorage(String storageFileName) {
+    public PersistentStorage(String storageFileName) {
         this.storageFileName = storageFileName;
         this.psFile = new File(storageFileName);
         this.logger = LogManager.getLogger(PersistentStorage.class);

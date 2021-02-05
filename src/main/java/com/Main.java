@@ -10,12 +10,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 
 public class Main {
-
+/*
     public static void main(String[] args) throws IOException {
-
         final Logger logger = LogManager.getLogger(Main.class);
-
-        /* Test Persistent Storage with std libs
+         Test Persistent Storage with std libs
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         //Configure JSON to detect all fields (public, private,etc)
@@ -24,7 +22,7 @@ public class Main {
         Integer intVal = 10;
         String info = mapper.writeValueAsString(tmp);
         logger.info(info);
-        */
+
 
         Temp tmp  = new Temp();
         PersistentStorage persistentStorage = new PersistentStorage("text.txt");
@@ -39,7 +37,7 @@ public class Main {
 
         //logger.info("The class in json:" + gson.toJson(persistentStorage));
 
-        /*  Test Persistent Storage without std libs
+          Test Persistent Storage without std libs
 
         PersistentStorage persistentStorage;
         persistentStorage = new PersistentStorage("sss.txt");
@@ -47,10 +45,8 @@ public class Main {
         persistentStorage.put("anotherString12", 16);
         logger.info(String.format("got value from db = %s \n ", persistentStorage.get("anotherString12")));
         persistentStorage.remove("anotherString");
-        */
 
-
-        /* Test Map Structure
+         Test Map Structure
         MapStruct ms = new MapStruct();
         char [] key = new char [20];
         key[0] = 'a';
@@ -73,7 +69,7 @@ public class Main {
        System.out.format("Got the value %s \n", String.valueOf(valByKey));
        ms.contains(key1);
        ms.remove(key1);
- */
 
-    }
+
+    } */
 }
