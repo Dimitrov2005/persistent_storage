@@ -1,5 +1,4 @@
 entry0 {"Integer":12368}
-objectInTheMiddle {"Temp":{"val":1,"val1":2,"tp":"This is protected","str":"hello","obj":{}}}
 entry1 {"Integer":12371}
 entry2 {"Integer":12374}
 entry3 {"Integer":12377}
@@ -50,6 +49,7 @@ entry47 {"Integer":12509}
 entry48 {"Integer":12512}
 entry49 {"Integer":12515}
 entry50 {"Integer":12518}
+objectInTheMiddle {"Temp":{"val":1,"val1":2,"tp":"This is protected","str":"hello","obj":{}}}
 entry51 {"Integer":12521}
 entry52 {"Integer":12524}
 entry53 {"Integer":12527}
