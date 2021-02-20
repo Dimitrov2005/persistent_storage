@@ -1,4 +1,4 @@
-package com;
+package com.api;
 
 public interface Storage {
     /**

@@ -1,4 +1,4 @@
-package com;
+package com.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +15,7 @@ public class MapStruct {
     private char [] entry;
     private char [][] storage;
     private int storageWritePointer;
-    private final Logger logger = LogManager.getLogger(Main.class);
+    private final Logger logger = LogManager.getLogger(MapStruct.class);
     /**
      * Class MapStruct - when creating an instance pass
      * lengthOfEntry - length of the char array for the

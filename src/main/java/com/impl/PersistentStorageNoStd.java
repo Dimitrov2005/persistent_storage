@@ -1,18 +1,20 @@
-package com;
+package com.impl;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+
+import com.api.Storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PersistentStorageNoStd implements Storage{
+public class PersistentStorageNoStd implements Storage {
 
     private MapStruct persistentStorageMap;
     private File psFile = new File("persistentStorageBase.txt");
     private int lengthOfEntry;
-    private final Logger logger = LogManager.getLogger(Main.class);
+    private final Logger logger = LogManager.getLogger(PersistentStorageNoStd.class);
 
     PersistentStorageNoStd(int lengthOfEntry, int storageSize) {
         this.lengthOfEntry = lengthOfEntry;
