@@ -12,6 +12,7 @@ public interface Storage {
      * Retrieve the value for the given key
      * @param key String representing the key
      * @return Object associated with the key
+     *      or null if the key is not mapped
      */
     Object get(String key);
 

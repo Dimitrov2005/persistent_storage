@@ -40,5 +40,10 @@ public abstract class PersisterBase {
      */
     protected abstract void EraseLocalStorage();
 
-
+    /**
+     * Decoding of the class based on a String.
+     * @param name - class name
+     * @return Class of type Class
+     */
+    public abstract Class decodeClass(String name);
 }
