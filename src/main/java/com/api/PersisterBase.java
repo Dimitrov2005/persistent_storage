@@ -1,5 +1,6 @@
 package com.api;
 
+import java.io.Serializable;
 import java.util.Map;
 
 public abstract class PersisterBase {
@@ -15,7 +16,7 @@ public abstract class PersisterBase {
      * @param key - key assoc with value
      * @param value - value for the key
      */
-    public abstract void put(String key, Object value);
+    public abstract void put(String key, Serializable value);
 
     /**
      * Get the object associated with the key

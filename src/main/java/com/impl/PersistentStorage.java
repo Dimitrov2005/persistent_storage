@@ -1,19 +1,12 @@
 package com.impl;
+
 import com.api.Storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.Map;
 
-
-//DONE 1.A class that does all the required read(on creation of the PS) /write(when new entry is there)
-// delete (when entry.remove) to make the class persistent. (a persister basically)
-//DONE 2. All e.print to be logged with logger
-
-//TODO 3. Unit test for every operation (Put, Read, Remove, Contains)
-/* TODO 4. Unit test to check i.e whether DB is persistent (create one instance, write entries, create other, read/
-    should be the same
-*/
 public class PersistentStorage implements Storage {
     private Map<String, Object> persistentStorageMap;
     private Logger logger;
@@ -32,7 +25,7 @@ public class PersistentStorage implements Storage {
 
     public void put(String key, Object value) {
         //Persist the value(write to local file)
-        persister.put(key,value);
+        persister.put(key,(Serializable)value);
 
         //Update the map
         if (persistentStorageMap.containsKey(key)) {

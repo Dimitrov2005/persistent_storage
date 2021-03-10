@@ -1,12 +1,12 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
 import com.impl.PersistentStorage;
+import org.junit.jupiter.api.Test;
 
 public class TestPersistentStorage {
 
     class TestClass{
-        public final String testValue = "test";
+        public final String testValue = "Test";
         public final Integer testInt = 10;
     }
 
@@ -45,7 +45,7 @@ public class TestPersistentStorage {
 
         //Classes internal public vars
         assertEquals((Integer)10, ((TestClass) persistentStorage.get("randomName5")).testInt);
-        assertEquals("test", ((TestClass) persistentStorage.get("randomName5")).testValue);
+        assertEquals("Test", ((TestClass) persistentStorage.get("randomName5")).testValue);
     }
 
     @Test

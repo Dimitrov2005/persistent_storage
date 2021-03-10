@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 public class Persister extends PersisterBase {
@@ -93,7 +94,7 @@ public class Persister extends PersisterBase {
     }
 
     @Override
-    public void put(String key, Object value) {
+    public void put(String key, Serializable value) {
         String valueToJson = null;
         boolean putInLocalStorage;
 
