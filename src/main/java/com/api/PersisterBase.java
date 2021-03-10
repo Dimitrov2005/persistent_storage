@@ -16,25 +16,25 @@ public abstract class PersisterBase {
      * @param key - key assoc with value
      * @param value - value for the key
      */
-    public abstract void put(String key, Serializable value);
-
+   /// public abstract void put(String key, Object value);
+;
     /**
      * Get the object associated with the key
      * @param key
      * @return Object
      */
-    public abstract Object get(String key);
+    //public abstract Object get(String key)
 
     /**
      * Check if element is contained in local file
      */
-    public abstract boolean contains(String key);
+    //public abstract boolean contains(String key);
 
     /**
      * Remove the object from the local file associated with key
      * @param Key
      */
-    public abstract boolean remove(String Key);
+   // public abstract boolean remove(String Key);
 
     /**
      * Erase all contents in the local file

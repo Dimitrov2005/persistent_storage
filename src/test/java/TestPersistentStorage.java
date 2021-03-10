@@ -3,22 +3,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.impl.PersistentStorage;
 import org.junit.jupiter.api.Test;
 
-public class TestPersistentStorage {
+import java.io.Serializable;
 
-    class TestClass{
-        public final String testValue = "Test";
-        public final Integer testInt = 10;
-    }
+public class TestPersistentStorage {
 
     @Test
     void  readWriteFromStorage() {
         PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageDB.txt");
         int numNodes = 100;
 
+        System.out.println("[TEST] Writing values to storage map");
         for (int i = 0; i < numNodes; i++) {
             persistentStorage.put(String.format("entry%d", i), i);
         }
 
+        System.out.println("[TEST] Checking values from same storage map");
         for (int i = 0; i < numNodes; i++) {
             assertEquals(i, persistentStorage.get(String.format("entry%d", i)));
         }
@@ -34,7 +33,6 @@ public class TestPersistentStorage {
         persistentStorage.put("randomName2", 1.3f);
         persistentStorage.put("randomName3", 4.856332323232d);
         persistentStorage.put("randomName4", 'a');
-        persistentStorage.put("randomName5", new TestClass());
 
         //Normal types
         assertEquals( "randomStringValue",persistentStorage.get("randomName0"));
@@ -42,15 +40,11 @@ public class TestPersistentStorage {
         assertEquals(1.3f,persistentStorage.get("randomName2"));
         assertEquals(4.856332323232d,persistentStorage.get("randomName3"));
         assertEquals('a',persistentStorage.get("randomName4"));
-
-        //Classes internal public vars
-        assertEquals((Integer)10, ((TestClass) persistentStorage.get("randomName5")).testInt);
-        assertEquals("Test", ((TestClass) persistentStorage.get("randomName5")).testValue);
     }
 
     @Test
     void testGet() {
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageGetTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest.txt");
 
         assertEquals( "randomStringValue",persistentStorage.get("randomName0"));
         assertEquals(0x1456,persistentStorage.get("randomName1"));
@@ -80,7 +74,7 @@ public class TestPersistentStorage {
 
     @Test
     void testPersistence () {
-        int numNodes = 1000;
+        int numNodes = 681;
         PersistentStorage persistentStorageWrite = new PersistentStorage("PersistentStoragePersTest.txt");
         PersistentStorage persistentStorageRead = new PersistentStorage("PersistentStoragePersTest.txt");
 
