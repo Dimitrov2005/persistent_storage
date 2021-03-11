@@ -12,6 +12,11 @@ public abstract class PersisterBase {
     public abstract Map<String,Object> getEntriesFromLocalStorage();
 
     /**
+     * Erase all contents in the local file
+     */
+    protected abstract void EraseLocalStorage();
+
+    /**
      * Put a new entry in the local file consisting of:
      * @param key - key assoc with value
      * @param value - value for the key
@@ -37,14 +42,9 @@ public abstract class PersisterBase {
    // public abstract boolean remove(String Key);
 
     /**
-     * Erase all contents in the local file
-     */
-    protected abstract void EraseLocalStorage();
-
-    /**
      * Decoding of the class based on a String.
      * @param name - class name
      * @return Class of type Class
      */
-    public abstract Class decodeClass(String name);
+    //public abstract Class decodeClass(String name);
 }

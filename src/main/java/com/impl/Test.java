@@ -13,7 +13,7 @@ public class Test {
         Map<String, Object> testMapWrite = new HashMap<>();
         Map<String, Object> testMapRead = new HashMap<>();
         testMapWrite.put("try1", 10);
-        testMapWrite.put("try2",new Integer(15));
+        testMapWrite.put("try2",15);
         testMapWrite.put("try3",new Object());
 
         Map<String,Serializable> testMapSer  = testMapWrite.entrySet().stream()

@@ -65,12 +65,14 @@ public class PersisterJavaSerialization extends PersisterBase{
 
     @Override
     protected void EraseLocalStorage() {
-
-    }
-
-    @Override
-    public Class decodeClass(String name) {
-        return null;
+        try {
+            FileOutputStream file = new FileOutputStream(psFile);
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            logger.error("", e);
+            throw new RuntimeException(e);
+        }
     }
 
 }
