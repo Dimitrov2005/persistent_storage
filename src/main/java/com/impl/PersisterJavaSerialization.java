@@ -16,7 +16,7 @@ public class PersisterJavaSerialization extends PersisterBase{
     private File psFile;
 
     public PersisterJavaSerialization(String fileName){
-        this.logger = LogManager.getLogger(Persister.class);
+        this.logger = LogManager.getLogger(PersisterJavaSerialization.class);
         this.storageFileName = fileName;
         this.psFile = new File(fileName);
     }
@@ -61,7 +61,6 @@ public class PersisterJavaSerialization extends PersisterBase{
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     protected void EraseLocalStorage() {

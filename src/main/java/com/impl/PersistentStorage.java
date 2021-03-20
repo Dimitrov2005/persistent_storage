@@ -55,6 +55,5 @@ public class PersistentStorage implements Storage {
             logger.error("Could not remove the key from the local map");
             return false;
         }
-
     }
 }
