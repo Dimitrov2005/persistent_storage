@@ -4,7 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -37,10 +41,11 @@ public class PersisterGitStorage extends PersisterJavaSerialization{
         super.persistMap(mapToPersist);
         //After map has been persisted (call to parent to save it ot the file)
         // commit to git using jgit (git add + git commit)
-        try (Git git = Git.init().setDirectory(storageDir).call()) {
+
+        try (Git git = Git.open(new File(storagePath + ".git"))) {
             git.add().addFilepattern(storageFileName).call();
             git.commit().setMessage("Persistence Commit").call();
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | IOException e) {
             logger.error("",e);
         }
     }
