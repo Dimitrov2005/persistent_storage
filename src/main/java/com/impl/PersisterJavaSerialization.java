@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class PersisterJavaSerialization extends PersisterBase{
 
-    private String storageFileName;
     private Logger logger;
-    private File psFile;
+    protected String storageFileName;
+    protected File psFile;
     protected String storagePath;
     protected File storageDir;
 

@@ -13,7 +13,7 @@ public class PersistentStorageTest {
     @Test
     @DisplayName("Read write 100 items from storage instance")
     void  testReadWriteFromStorage() {
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageRWTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageRWTest");
         int numNodes = 100;
 
         System.out.println("[TEST] Writing values to storage map");
@@ -25,14 +25,14 @@ public class PersistentStorageTest {
         for (int i = 0; i < numNodes; i++) {
             assertEquals(i, persistentStorage.get(String.format("entry%d", i)));
         }
-        assertEquals(50, persistentStorage.get("entry50"));
+        assertEquals(numNodes/2, persistentStorage.get("entry"+numNodes/2));
     }
 
     @Test
     @DisplayName("Put 5 different items in storage and check them")
     @Tag("fast")
     void testPut(){
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest");
 
         persistentStorage.put("randomName0", "randomStringValue");
         persistentStorage.put("randomName1", 0x1456);
@@ -52,7 +52,7 @@ public class PersistentStorageTest {
     @DisplayName("Get 5 different items, already written to DB")
     @Tag("fast")
     void testGet() {
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest");
 
         assertEquals( "randomStringValue",persistentStorage.get("randomName0"));
         assertEquals(0x1456,persistentStorage.get("randomName1"));
@@ -65,8 +65,8 @@ public class PersistentStorageTest {
     @DisplayName("Remove items")
     @Tag("fast")
     void testRemove(){
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageRemoveTest.txt");
-        PersistentStorage persistentStorage1 = new PersistentStorage("PersistentStorageRemoveTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageRemoveTest");
+        PersistentStorage persistentStorage1 = new PersistentStorage("PersistentStorageRemoveTest");
 
         persistentStorage.put("randomName0", "randomStringValue");
         persistentStorage.remove("randomName0");
@@ -82,9 +82,9 @@ public class PersistentStorageTest {
     @DisplayName("Check contain method")
     @Tag("fast")
     void testContains(){
-        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageContTest.txt");
+        PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageContTest");
         persistentStorage.put("randomName0", "randomStringValue");
-        PersistentStorage persistentStorage1 = new PersistentStorage("PersistentStorageContTest.txt");
+        PersistentStorage persistentStorage1 = new PersistentStorage("PersistentStorageContTest");
         assertEquals(true, persistentStorage1.contains("randomName0"));
     }
 
@@ -93,17 +93,17 @@ public class PersistentStorageTest {
     @Tag("persistence")
     void testPersistence () {
         int numNodes = 681;
-        PersistentStorage persistentStorageWrite = new PersistentStorage("PersistentStoragePersTest.txt");
-        PersistentStorage persistentStorageRead = new PersistentStorage("PersistentStoragePersTest.txt");
+        PersistentStorage persistentStorageWrite = new PersistentStorage("PersistentStoragePersTest");
+        PersistentStorage persistentStorageRead = new PersistentStorage("PersistentStoragePersTest");
 
-        for (int i = 0; i < numNodes; i++) {
+        for (int i = 1; i < numNodes; i++) {
             if(i%2 == 0)
                 persistentStorageWrite.put(String.format("entry%d", i), i);
             else
                 persistentStorageWrite.put(String.format("entry%d", i), String.format("value%d", i));
         }
 
-        for (int i = 0; i < numNodes; i++) {
+        for (int i = 1; i < numNodes; i++) {
             if(i%2 == 0)
                 assertEquals(i,persistentStorageRead.get(String.format("entry%d", i)));
             else

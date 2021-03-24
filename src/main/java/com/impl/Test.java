@@ -1,6 +1,8 @@
 package com.impl;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -65,6 +67,17 @@ public class Test {
             System.out.println("IOException is caught");
         } catch(ClassNotFoundException ex) {
             System.out.println("ClassNotFoundException is caught");
+        }
+
+        String path = Paths.get("").toAbsolutePath().toString() + "\\persistent_git";
+
+        System.out.println("path" + path);
+        File file = new File(path);
+        boolean bool = file.mkdir();
+        if(bool){
+            System.out.println("Directory created successfully");
+        }else{
+            System.out.println("Sorry couldn’t create specified directory");
         }
     }
 }

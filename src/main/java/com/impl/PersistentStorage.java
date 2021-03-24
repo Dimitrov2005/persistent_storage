@@ -9,7 +9,8 @@ import java.util.Map;
 public class PersistentStorage implements Storage {
     private Map<String, Object> persistentStorageMap;
     private Logger logger;
-    private PersisterJavaSerialization persister;
+    //private PersisterJavaSerialization persister;
+    private PersisterGitStorage persister;
 
     /**
      * Implementation of persistent storage
@@ -18,7 +19,8 @@ public class PersistentStorage implements Storage {
      */
     public PersistentStorage(String storageFileName) {
         this.logger = LogManager.getLogger(PersistentStorage.class);
-        this.persister = new PersisterJavaSerialization(storageFileName);
+        //this.persister = new PersisterJavaSerialization(storageFileName);
+        this.persister = new PersisterGitStorage(storageFileName);
         this.persistentStorageMap = persister.getEntriesFromLocalStorage();
     }
 
