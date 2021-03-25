@@ -1,177 +1,274 @@
-package com.ps;
-import java.util.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+package com;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
-public class PersistentStorage {
 
-    private static HashMap<String, Object> persistentStorageMap;
-    private static File PSfile = new File("persistentStorageBase.txt");
+public class PersistentStorage implements Storage {
+    private Map<String, Object> persistentStorageMap;
+    private String storageFileName;
+    private File psFile;
+    private Logger logger;
+    private ObjectMapper mapper;
 
-    PersistentStorage() {
-        persistentStorageMap = new HashMap<String, Object>();
-        populateStorageMap(persistentStorageMap);
+    /**
+     * Implementation of persistent storage
+     * @param storageFileName - name of the file on which the
+     *                        will be used as local storage
+     */
+    public PersistentStorage(String storageFileName) {
+        this.storageFileName = storageFileName;
+        this.psFile = new File(storageFileName);
+        this.logger = LogManager.getLogger(PersistentStorage.class);
+        this.persistentStorageMap = new HashMap<>();
+        this.mapper = new ObjectMapper();
+
+        //Disable exception on empty bean
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        //Configure JSON to detect all fields (public, private,packPrivate, protected)
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE); // Class name as first string
+
         try {
-            if (PSfile.createNewFile()) {
-            System.out.println("New database file for persistent storage created: \n" + PSfile.getName());
+            if (psFile.createNewFile()) {
+                logger.info("New database file for persistent storage created:" + psFile.getName());
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+       populateStorageMap(persistentStorageMap);
     }
 
-    void put(String key, Object value)  {
-        try{
-            //Read file for already existing key, if found - update
-            Scanner PSfileScan = new Scanner(PSfile);
-            StringBuffer buffer = new StringBuffer();
-            String oldK = "";
-            String oldV = "";
-            String PSrawText = "";
-            boolean keyExists = false;
-            while(PSfileScan.hasNextLine()){
-                String data = PSfileScan.nextLine();
-                String [] tmp = data.split(" ");
-                if (tmp[0].equals(key)) {
-                    System.out.format("The key is already inside the db : %s \n ", key);
-                    oldK = tmp[0];
-                    oldV = tmp[1];
-                    keyExists = true;
-                }
-                buffer.append(data + System.lineSeparator());
+    public void put(String key, Object value) {
+        //Put node into local storage
+        boolean putInLocalStorage = false;
+        String valueToJson = null;
+        try {
+            valueToJson = mapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        putInLocalStorage = updateLocalStorageNode(key, valueToJson);
+        if (putInLocalStorage == false) logger.error("Node not stored into local storage. Key=" + key);
+
+        //Update the local map
+        if (persistentStorageMap.containsKey(key)) {
+            persistentStorageMap.replace(key, valueToJson);
+            logger.info(String.format("Update entry value for key=%s, value=%s", key, valueToJson));
+        } else {
+            persistentStorageMap.put(key, valueToJson);
+            logger.info(String.format("Add new entry to database with key=%s, value=%s", key, valueToJson));
+        }
+    }
+
+    public Object get(String key) {
+        Object objLocalStorage = new Object();
+        objLocalStorage = getObjectFromLocalStorage(key);
+        return objLocalStorage;
+    }
+
+    public boolean contains(String key) {
+        boolean containsLocalStorage = containedInLocalStorage(key);
+        boolean containsLocalMap = persistentStorageMap.containsKey(key);
+        return containsLocalMap && containsLocalStorage ;
+    }
+
+    public boolean remove(String key) {
+        boolean rmLocalMap = false;
+        boolean rmLocalStorage = removeLocalStorageNode(key);
+
+        if (persistentStorageMap.containsKey(key)) {
+            persistentStorageMap.remove(key);
+            rmLocalMap = true;
+        }
+        return rmLocalStorage && rmLocalMap;
+    }
+
+    //Private methods for manipulation of the local storage(text file)
+
+    /**
+     * Load values from local storage file into the hash map.
+     * @param map - Map to load the values into
+     */
+    private void populateStorageMap(Map<String, Object> map) {
+        try {
+            //load the map from the file
+            Scanner psFileScan;
+            psFileScan = new Scanner(psFile);
+            logger.info("Loading file: " + storageFileName);
+            while (psFileScan.hasNextLine()) {
+                String node = psFileScan.nextLine();
+                String[] kv = node.split(" ");
+                if (kv.length >= 2) {
+                    logger.info("put value into local map" + node.replaceFirst(kv[0],""));
+                    persistentStorageMap.put(kv[0], mapper.writeValueAsString(node.replaceFirst(kv[0],"")));
+                } else logger.info("String split did not get any values, maybe storage file is empty");
             }
-
-            //If the key exists, update the value, else add new entry
-            if(keyExists) {
-                PSrawText = buffer.toString();
-                PSrawText = PSrawText.replaceAll(String.format("%s %s",oldK,oldV), String.format("%s %d",key,value));
-            } else {
-                buffer.append(String.format("%s %d", key,value) + System.lineSeparator());
-                PSrawText = buffer.toString();
-            }
-
-            PSfileScan.close();
-
-            //Write the new buffer to the file:
-            FileWriter PSWriter = new FileWriter("persistentStorageBase.txt");
-            PSWriter.flush();
-            PSWriter.write(PSrawText);
-            PSWriter.close();
-
-            //Now handle the local map
-            if(persistentStorageMap.containsKey(key)) {
-                persistentStorageMap.replace(key, value);
-                System.out.format("Update entry value for key=%s, value=%d \n",key,value);
-            }
-            else {
-                persistentStorageMap.put(key, value);
-                System.out.format("Add new entry to database with key=%s, value=%d \n", key, value);
-            }
-            //TODO: Make smarter - via cast check for object type and write based on it in DB
-
+            psFileScan.close();
         } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+            logger.error("An error occurred when trying to create or load PSDB.");
             e.printStackTrace();
         }
     }
 
-    Object get(String key) {
-        Scanner PSfileScan;
+    /**
+     * Get Object from local storage associated with the key
+     * @param key key associated with the Object
+     * @return the Object
+     */
+    private Object getObjectFromLocalStorage(String key) {
         Object obj = new Object();
         try {
-           //load the map from the file
-           PSfileScan = new Scanner(PSfile);
-           while (PSfileScan.hasNextLine()) { //Improve: parse based on data red
-               String data = PSfileScan.nextLine();
-               String[] kv = data.split(" ");
-               if (kv[0].equals(key)) {
-                   obj = kv[1];
-               }
-           }
-           PSfileScan.close();
+            Scanner psFileScan;
+            psFileScan = new Scanner(psFile);
+            while (psFileScan.hasNextLine()) {
+                String node = psFileScan.nextLine();
+                String[] kv = node.split(" ");
+                if (kv.length >= 2 && kv[0].equals(key)) {
+                    obj = mapper.readValue(node.replaceFirst(kv[0],""), Object.class);
+                    logger.info("Retrieved value from local storage:" + node.replaceFirst(kv[0],""));
+                    return obj;
+                }
+            }
         } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+            logger.info("An error occurred when trying to create or load PSDB.");
             e.printStackTrace();
         }
         return obj;
     }
 
-    boolean contains(String key) {
-        return persistentStorageMap.containsKey(key) ? true : false;
+    /**
+     * Check if key is contained in the local storage
+     * @param key - Key to be checked
+     * @return true if key is found or false if not
+     */
+    private boolean containedInLocalStorage(String key) {
+        try {
+            Scanner psFileScan;
+            psFileScan = new Scanner(psFile);
+            while (psFileScan.hasNextLine()) {
+                String node = psFileScan.nextLine();
+                String[] kv = node.split(" ");
+                if (kv.length >= 2 && kv[0].equals(key)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            logger.info("An error occurred when trying to create or load PSDB.");
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    boolean remove(String key) {
-        boolean rmStorage = false;
-        boolean rmLocal = false;
-        boolean keyExists = false;
+    /**
+     * Put a new node into the local storage
+     * @param key Key associated with the value
+     * @param value the Object as a string
+     * @return true if new node is created
+     */
+    private boolean updateLocalStorageNode(String key, String value) {
         try {
-            Scanner PSfileScan = new Scanner(PSfile);
+            Scanner psFileScan = new Scanner(psFile);
             StringBuffer buffer = new StringBuffer();
             String oldK = "";
             String oldV = "";
-            String PSrawText = "";
-
-            //Read file for already existing key, if found - remove else - return false
-            while (PSfileScan.hasNextLine()) {
-                String data = PSfileScan.nextLine();
-                String[] tmp = data.split(" ");
-                if (tmp[0].equals(key)) {
-                    System.out.format("The key to be removed is inside the db : %s \n ", key);
-                    oldK = tmp[0];
-                    oldV = tmp[1];
+            String psRawText;
+            boolean keyExists = false;
+            while (psFileScan.hasNextLine()) {
+                String node = psFileScan.nextLine();
+                String[] keyValueSeparated = node.split(" ");
+                if (keyValueSeparated[0].equals(key)) {
+                    logger.info(String.format("The key is already inside the db : %s", key));
+                    oldK = keyValueSeparated[0];
+                    oldV = node.replaceFirst(keyValueSeparated[0],"");
                     keyExists = true;
                 }
-                buffer.append(data + System.lineSeparator());
+                buffer.append(node + System.lineSeparator());
+            }
+            //If the key exists, update the value, else add new entry
+            if (keyExists) {
+                psRawText = buffer.toString();
+                psRawText = psRawText.replace(String.format("%s %s", oldK, oldV), String.format("%s %s", key, value));
+            } else {
+                buffer.append(String.format("%s %s", key, value) + System.lineSeparator());
+                psRawText = buffer.toString();
+            }
+            psFileScan.close();
+            //Write the new buffer to the file:
+            writeToFile(storageFileName,psRawText);
+            return true;
+        } catch (IOException e) {
+            logger.info("An error occurred when trying to create or load PSDB.");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Remove node from the local storage
+     * @param key - key associated with the node
+     * @return - true if the node is removed from the storage
+     */
+    public boolean removeLocalStorageNode(String key) {
+        boolean rmStatus = false;
+        try {
+            Scanner psFileScan = new Scanner(psFile);
+            StringBuffer buffer = new StringBuffer();
+            String oldK = "";
+            String oldV = "";
+            String psRawText = "";
+            boolean keyExists = false;
+
+            //Read file for already existing key, if found - remove else - return false
+            while (psFileScan.hasNextLine()) {
+                String node = psFileScan.nextLine();
+                String[] keyValueSeparated = node.split(" ");
+                if (keyValueSeparated[0].equals(key)) {
+                    logger.info(String.format("The key to be removed is inside the db : %s ", key));
+                    oldK = keyValueSeparated[0];
+                    oldV = node.replaceFirst(keyValueSeparated[0],"");
+                    keyExists = true;
+                }
+                buffer.append(node + System.lineSeparator());
+
             }
 
             //If the key exists, remove the value, remove the blank line, else do nothing
             if (keyExists) {
-                PSrawText = buffer.toString();
-                PSrawText = PSrawText.replaceAll(String.format("%s %s", oldK, oldV), "");
-                PSrawText = PSrawText.replaceAll("[\\\r\\\n]+", "");
-                rmStorage = true;
+                psRawText = buffer.toString();
+                psRawText = psRawText.replace(String.format("%s %s", oldK, oldV), "");
+                psRawText = psRawText.replace("[\\\r\\\n]+", "");
+                rmStatus = true;
             }
-            PSfileScan.close();
-
+            psFileScan.close();
             //Write the new buffer to the file:
-            FileWriter PSWriter = new FileWriter("persistentStorageBase.txt");
-            PSWriter.flush();
-            PSWriter.write(PSrawText);
-            PSWriter.close();
-        }catch (IOException e){
+            writeToFile(storageFileName,psRawText);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (persistentStorageMap.containsKey(key)) {
-            persistentStorageMap.remove(key);
-            rmLocal = true;
-        }
-
-        return rmLocal && rmStorage;
+        return rmStatus;
     }
 
-    void populateStorageMap(HashMap<String,Object> map){
-        Scanner PSfileScan;
-        try {
-            //load the map from the file
-            PSfileScan = new Scanner(PSfile);
-            System.out.println("Loading file persistentStorageBase.txt");
-            while (PSfileScan.hasNextLine()) { //Improve: parse based on data red
-                String data = PSfileScan.nextLine();
-                String[] kv = data.split(" ");
-                if(kv.length >= 2) {
-                    String k = kv[0];
-                    String v = kv[1];
-                    persistentStorageMap.put(k, v);
-                } else System.out.println("Error - String split did not get any values");
-            }
-            PSfileScan.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred when trying to create or load PSDB.");
+    /**
+     * Write a String to a file
+     * @param fileName - the name of the file
+     * @param text - String to be written
+     */
+    private void writeToFile(String fileName, String text){
+        try{
+            FileWriter psWriter = new FileWriter(fileName);
+            psWriter.flush();
+            psWriter.write(text);
+            psWriter.close();
+        }catch(IOException e) {
+            logger.error("Write to file failed" + fileName);
             e.printStackTrace();
         }
     }
