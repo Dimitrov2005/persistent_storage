@@ -7,11 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+
 
 public class PersistentStorage implements Storage {
     private Map<String, Object> persistentStorageMap;
@@ -41,11 +37,12 @@ public class PersistentStorage implements Storage {
         try {
             if (psFile.createNewFile()) {
                 logger.info("New database file for persistent storage created:" + psFile.getName());
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        populateStorageMap(persistentStorageMap);
+       populateStorageMap(persistentStorageMap);
     }
 
     public void put(String key, Object value) {
@@ -240,6 +237,7 @@ public class PersistentStorage implements Storage {
                     keyExists = true;
                 }
                 buffer.append(node + System.lineSeparator());
+
             }
 
             //If the key exists, remove the value, remove the blank line, else do nothing
@@ -275,3 +273,4 @@ public class PersistentStorage implements Storage {
         }
     }
 }
+
