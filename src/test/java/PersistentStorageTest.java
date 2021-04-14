@@ -30,7 +30,7 @@ public class PersistentStorageTest {
 
     @Test
     @DisplayName("Put 5 different items in storage and check them")
-    @Tag("fast")
+    @Tag("smoke")
     void testPut(){
         PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest");
 
@@ -50,7 +50,7 @@ public class PersistentStorageTest {
 
     @Test
     @DisplayName("Get 5 different items, already written to DB")
-    @Tag("fast")
+    @Tag("smoke")
     void testGet() {
         PersistentStorage persistentStorage = new PersistentStorage("PersistentStoragePutTest");
 
@@ -63,7 +63,7 @@ public class PersistentStorageTest {
 
     @RepeatedTest(2)
     @DisplayName("Remove items")
-    @Tag("fast")
+    @Tag("smoke")
     void testRemove(){
         PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageRemoveTest");
         PersistentStorage persistentStorage1 = new PersistentStorage("PersistentStorageRemoveTest");
@@ -80,7 +80,7 @@ public class PersistentStorageTest {
 
     @RepeatedTest(2)
     @DisplayName("Check contain method")
-    @Tag("fast")
+    @Tag("smoke")
     void testContains(){
         PersistentStorage persistentStorage = new PersistentStorage("PersistentStorageContTest");
         persistentStorage.put("randomName0", "randomStringValue");
@@ -92,7 +92,7 @@ public class PersistentStorageTest {
     @DisplayName("Write multiple times, read from another instance, check for persistence")
     @Tag("persistence")
     void testPersistence () {
-        int numNodes = 681;
+        int numNodes = 3;
         PersistentStorage persistentStorageWrite = new PersistentStorage("PersistentStoragePersTest");
         PersistentStorage persistentStorageRead = new PersistentStorage("PersistentStoragePersTest");
 
@@ -104,11 +104,30 @@ public class PersistentStorageTest {
         }
 
         for (int i = 1; i < numNodes; i++) {
+
             if(i%2 == 0)
                 assertEquals(i,persistentStorageRead.get(String.format("entry%d", i)));
             else
                 assertEquals(String.format("value%d", i),persistentStorageRead.get(String.format("entry%d", i)));
         }
+    }
+
+    @Test
+    @DisplayName("Simultaneous writes to persistent db from two different instances")
+    @Tag("multithreading")
+    void testMultipleWritesAtSameTime () {
+        PersistentStorage persistentStorageWrite0 = new PersistentStorage("PersistentStorageMultiTest");
+        PersistentStorage persistentStorageWrite1 = new PersistentStorage("PersistentStorageMultiTest");
+        persistentStorageWrite0.put("entry1", 1);
+        persistentStorageWrite1.put("entry2", 2);
+
+        PersistentStorage persistentStorageRead = new PersistentStorage("PersistentStorageMultiTest");
+        assertEquals(1,persistentStorageRead.get("entry1"));
+        assertEquals(2,persistentStorageRead.get("entry2"));
+
+        persistentStorageWrite0.put("entry3", 1);
+        persistentStorageWrite1.remove("entry3");
+        assertEquals(null,persistentStorageRead.get("entry3"));
     }
 }
 

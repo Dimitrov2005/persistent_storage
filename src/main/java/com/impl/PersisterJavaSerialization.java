@@ -30,6 +30,7 @@ public class PersisterJavaSerialization extends PersisterBase{
         this.psFile = new File(storagePath + "\\" + storageFileName);
     }
 
+    //TODO: Rename this method to make more sense ! smth like deserialize map, etc.
     @Override
     public Map<String, Object> getEntriesFromLocalStorage() {
         Map<String,Object> deserializedMap = new HashMap<>();
