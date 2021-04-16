@@ -30,52 +30,38 @@ public class PersisterJavaSerialization extends PersisterBase{
         this.psFile = new File(storagePath + "\\" + storageFileName);
     }
 
-    //TODO: Rename this method to make more sense ! smth like deserialize map, etc.
     @Override
-    public Map<String, Object> getEntriesFromLocalStorage() {
+    public Map<String, Object> getMapFromLocalFile() {
         Map<String,Object> deserializedMap = new HashMap<>();
 
         if(psFile.exists() && psFile.canRead()) {
-            ObjectInputStream in = null;
-            FileInputStream file = null;
-            try {
-                file = new FileInputStream(psFile);
-                in = new ObjectInputStream(file);
+            try ( FileInputStream file = new FileInputStream(psFile);
+                  ObjectInputStream in = new ObjectInputStream(file)){
 
                 deserializedMap = (Map<String, Object>) in.readObject();
                 logger.info("Retrieved local map from file " + storageFileName);
 
-            } catch (EOFException e) { //Todo : clean up this, this is thrown when new file is created since it is empty
+            } catch (EOFException e) {
                 logger.info("", e);
             } catch (IOException | ClassNotFoundException e) {
                 logger.error("", e);
                 throw new RuntimeException();
-            } finally {
-                try {
-                    if (in != null) in.close();
-                    if (file != null) file.close();
-                } catch (IOException e) {
-                    logger.error("", e);
-                }
             }
         }
+        logger.info("New hash map created for persistence");
         return deserializedMap;
     }
 
     public <K,V> void persistMap(Map<K,V> mapToPersist) {
-        try {
-            FileOutputStream file = new FileOutputStream(psFile);
-            ObjectOutputStream out = new ObjectOutputStream(file);
+        try(FileOutputStream file = new FileOutputStream(psFile);
+            ObjectOutputStream out = new ObjectOutputStream(file) ){
 
             //Clean old database
             file.flush();
             //Write new map
             out.writeObject(mapToPersist);
 
-            out.close();
-            file.close();
             logger.info("Serialize map object and write to file");
-
         } catch(IOException e) {
             logger.error("",e);
             throw new RuntimeException(e);
@@ -84,10 +70,8 @@ public class PersisterJavaSerialization extends PersisterBase{
 
     @Override
     protected void EraseLocalStorage() {
-        try {
-            FileOutputStream file = new FileOutputStream(psFile);
+        try (FileOutputStream file = new FileOutputStream(psFile)) {
             file.flush();
-            file.close();
         } catch (IOException e) {
             logger.error("", e);
             throw new RuntimeException(e);

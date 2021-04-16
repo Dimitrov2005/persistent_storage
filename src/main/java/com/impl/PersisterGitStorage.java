@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
@@ -52,9 +50,7 @@ public class PersisterGitStorage extends PersisterJavaSerialization{
             if(hasRemoteOrigin) {
                 git.pull().call();
             }
-            //logger.info("BEFORE " + mapToPersist);
             updateMap(mapToPersist);
-            //logger.info("AFTER " + mapToPersist);
             git.add().addFilepattern(storageFileName).call();
             git.commit().setMessage("Persistence Commit").call();
             if(hasRemoteOrigin) {
@@ -77,7 +73,7 @@ public class PersisterGitStorage extends PersisterJavaSerialization{
      * @param <V> value type
      */
     public <K,V> void updateMap (Map <K,V> internal){
-        Map <K, V> pulledMapDeserialized = (Map<K, V>) getEntriesFromLocalStorage();
+        Map <K, V> pulledMapDeserialized = (Map<K, V>) getMapFromLocalFile();
         internal.putAll(pulledMapDeserialized);
     }
 

@@ -112,9 +112,9 @@ public class PersistentStorageTest {
         }
     }
 
-    @Test
-    @DisplayName("Simultaneous writes to persistent db from two different instances")
-    @Tag("multithreading")
+//    @Test
+//    @DisplayName("Simultaneous writes to persistent db from two different instances")
+//    @Tag("multithreading")
     void testMultipleWritesAtSameTime () {
         PersistentStorage persistentStorageWrite0 = new PersistentStorage("PersistentStorageMultiTest");
         PersistentStorage persistentStorageWrite1 = new PersistentStorage("PersistentStorageMultiTest");

@@ -49,7 +49,7 @@ public class PersisterJSONSerialization extends PersisterBase implements Storage
     }
 
     @Override
-    public Map<String,Object> getEntriesFromLocalStorage() {
+    public Map<String,Object> getMapFromLocalFile() {
         Map<String, Object> tempMap = new HashMap<>();
         try {
             //load the map from the file

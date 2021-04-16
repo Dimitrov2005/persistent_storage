@@ -9,7 +9,7 @@ public abstract class PersisterBase {
      * into a map object.
      * @return a full map of entries from the local DB
      */
-    public abstract Map<String,Object> getEntriesFromLocalStorage();
+    public abstract Map<String,Object> getMapFromLocalFile();
 
     /**
      * Erase all contents in the local file
