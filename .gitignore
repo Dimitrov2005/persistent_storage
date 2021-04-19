@@ -24,4 +24,8 @@ hs_err_pid*
 
 .idea/*
 target/*
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531
 *Temp.java*

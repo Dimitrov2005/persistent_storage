@@ -1,20 +1,35 @@
+<<<<<<< HEAD:src/main/java/com/impl/PersistentStorageNoStd.java
 package com.impl;
+=======
+package com;
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531:src/main/java/com/PersistentStorageNoStd.java
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+<<<<<<< HEAD:src/main/java/com/impl/PersistentStorageNoStd.java
 
 import com.api.Storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PersistentStorageNoStd implements Storage {
+=======
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class PersistentStorageNoStd implements Storage{
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531:src/main/java/com/PersistentStorageNoStd.java
 
     private MapStruct persistentStorageMap;
     private File psFile = new File("persistentStorageBase.txt");
     private int lengthOfEntry;
+<<<<<<< HEAD:src/main/java/com/impl/PersistentStorageNoStd.java
     private final Logger logger = LogManager.getLogger(PersistentStorageNoStd.class);
+=======
+    private final Logger logger = LogManager.getLogger(Main.class);
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531:src/main/java/com/PersistentStorageNoStd.java
 
     PersistentStorageNoStd(int lengthOfEntry, int storageSize) {
         this.lengthOfEntry = lengthOfEntry;

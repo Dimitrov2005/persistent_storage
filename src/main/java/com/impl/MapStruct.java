@@ -1,8 +1,15 @@
+<<<<<<< HEAD:src/main/java/com/impl/MapStruct.java
 package com.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+=======
+package com;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531:src/main/java/com/MapStruct.java
 import java.util.Arrays;
 
 public class MapStruct {
@@ -15,7 +22,13 @@ public class MapStruct {
     private char [] entry;
     private char [][] storage;
     private int storageWritePointer;
+<<<<<<< HEAD:src/main/java/com/impl/MapStruct.java
     private final Logger logger = LogManager.getLogger(MapStruct.class);
+=======
+
+    private final Logger logger = LogManager.getLogger(Main.class);
+
+>>>>>>> b2b4821918a89b524926fdb9d9c053ffd319e531:src/main/java/com/MapStruct.java
     /**
      * Class MapStruct - when creating an instance pass
      * lengthOfEntry - length of the char array for the
