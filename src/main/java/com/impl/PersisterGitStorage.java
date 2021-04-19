@@ -13,9 +13,9 @@ import java.util.Map;
 
 
 /**
- * Uses local or remote git repository to keep track of
- * database. User should clone the whole repo of the project
- * and use the DB as is.
+ * Uses local or remote git repository to persist and keep track of
+ * database. User should clone the whole repo of the project and use
+ * the DB as is.
  */
 public class PersisterGitStorage extends PersisterJavaSerialization{
 
