@@ -1,0 +1,6 @@
+randomName0 {"String":"randomStringValue"}
+randomName1 {"Integer":5206}
+randomName2 {"Float":1.3}
+randomName3 {"Double":4.856332323232}
+randomName4 {"Character":"a"}
+randomName5 {"TestClass":{"testValue":"test","testInt":10}}
