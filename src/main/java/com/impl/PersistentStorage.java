@@ -1,23 +1,15 @@
 package com.impl;
+
 import com.api.Storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Map;
 
-
-//DONE 1.A class that does all the required read(on creation of the PS) /write(when new entry is there)
-// delete (when entry.remove) to make the class persistent. (a persister basically)
-//DONE 2. All e.print to be logged with logger
-
-//TODO 3. Unit test for every operation (Put, Read, Remove, Contains)
-/* TODO 4. Unit test to check i.e whether DB is persistent (create one instance, write entries, create other, read/
-    should be the same
-*/
 public class PersistentStorage implements Storage {
     private Map<String, Object> persistentStorageMap;
     private Logger logger;
-    private Persister persister;
+    private PersisterJavaSerialization persister;
 
     /**
      * Implementation of persistent storage
@@ -26,14 +18,11 @@ public class PersistentStorage implements Storage {
      */
     public PersistentStorage(String storageFileName) {
         this.logger = LogManager.getLogger(PersistentStorage.class);
-        this.persister = new Persister(storageFileName);
+        this.persister = new PersisterJavaSerialization(storageFileName);
         this.persistentStorageMap = persister.getEntriesFromLocalStorage();
     }
 
     public void put(String key, Object value) {
-        //Persist the value(write to local file)
-        persister.put(key,value);
-
         //Update the map
         if (persistentStorageMap.containsKey(key)) {
             persistentStorageMap.replace(key, value);
@@ -42,6 +31,8 @@ public class PersistentStorage implements Storage {
             persistentStorageMap.put(key, value);
             logger.info(String.format("Add new entry to database with key=%s, value=%s", key, value));
         }
+        //Persist the value(write to local file)
+        persister.persistMap(persistentStorageMap);
     }
 
     public Object get(String key) {
@@ -53,16 +44,17 @@ public class PersistentStorage implements Storage {
     }
 
     public boolean remove(String key) {
-        //Remove from the persistent DB
-        persister.remove(key);
 
         //Remove from map
         if (persistentStorageMap.containsKey(key)) {
             persistentStorageMap.remove(key);
+
+            persister.persistMap(persistentStorageMap);
             return true;
         }else {
             logger.error("Could not remove the key from the local map");
             return false;
         }
+
     }
 }

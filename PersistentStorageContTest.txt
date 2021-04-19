@@ -1,2 +1,0 @@
-randomName0 {"String":"randomStringValue"}
-entry0 {"Integer":0}

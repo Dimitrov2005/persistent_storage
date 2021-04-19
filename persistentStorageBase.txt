@@ -1,1 +1,0 @@
-anotherString12 {"Temp":{"val":1,"val1":2,"tp":"This is protected","str":"hello","obj":{}}}

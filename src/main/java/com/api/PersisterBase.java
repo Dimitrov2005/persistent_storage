@@ -1,5 +1,6 @@
 package com.api;
 
+import java.io.Serializable;
 import java.util.Map;
 
 public abstract class PersisterBase {
@@ -11,39 +12,39 @@ public abstract class PersisterBase {
     public abstract Map<String,Object> getEntriesFromLocalStorage();
 
     /**
+     * Erase all contents in the local file
+     */
+    protected abstract void EraseLocalStorage();
+
+    /**
      * Put a new entry in the local file consisting of:
      * @param key - key assoc with value
      * @param value - value for the key
      */
-    public abstract void put(String key, Object value);
-
+   /// public abstract void put(String key, Object value);
+;
     /**
      * Get the object associated with the key
      * @param key
      * @return Object
      */
-    public abstract Object get(String key);
+    //public abstract Object get(String key)
 
     /**
      * Check if element is contained in local file
      */
-    public abstract boolean contains(String key);
+    //public abstract boolean contains(String key);
 
     /**
      * Remove the object from the local file associated with key
      * @param Key
      */
-    public abstract boolean remove(String Key);
-
-    /**
-     * Erase all contents in the local file
-     */
-    protected abstract void EraseLocalStorage();
+   // public abstract boolean remove(String Key);
 
     /**
      * Decoding of the class based on a String.
      * @param name - class name
      * @return Class of type Class
      */
-    public abstract Class decodeClass(String name);
+    //public abstract Class decodeClass(String name);
 }

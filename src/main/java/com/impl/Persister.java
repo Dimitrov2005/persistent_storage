@@ -1,6 +1,7 @@
 package com.impl;
 
 import com.api.PersisterBase;
+import com.api.Storage;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,9 +13,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
-public class Persister extends PersisterBase {
+public class Persister extends PersisterBase implements Storage {
 
     //All vars private
     //Methods public/private/protected
@@ -92,7 +94,6 @@ public class Persister extends PersisterBase {
         return tempMap;
     }
 
-    @Override
     public void put(String key, Object value) {
         String valueToJson = null;
         boolean putInLocalStorage;
