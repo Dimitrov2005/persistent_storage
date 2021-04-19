@@ -10,6 +10,7 @@ public class PersistentStorage implements Storage {
     private Map<String, Object> persistentStorageMap;
     private Logger logger;
     private PersisterJavaSerialization persister;
+    //private PersisterGitStorage persister;
 
     /**
      * Implementation of persistent storage
@@ -18,8 +19,12 @@ public class PersistentStorage implements Storage {
      */
     public PersistentStorage(String storageFileName) {
         this.logger = LogManager.getLogger(PersistentStorage.class);
-        this.persister = new PersisterJavaSerialization(storageFileName);
-        this.persistentStorageMap = persister.getEntriesFromLocalStorage();
+        this.persister = new PersisterJavaSerialization(storageFileName); // no git, java serialization only
+        //this.persister = new PersisterGitStorage(storageFileName, "", false); // local repo
+        //this.persister = new PersisterGitStorage(storageFileName, "https://github.com/Dimitrov2005/persistenceDB.git", false);
+        //persister.setGitPassword("");
+        //persister.setGitUsername("");
+        this.persistentStorageMap = persister.getMapFromLocalFile();
     }
 
     public void put(String key, Object value) {
@@ -55,6 +60,5 @@ public class PersistentStorage implements Storage {
             logger.error("Could not remove the key from the local map");
             return false;
         }
-
     }
 }
